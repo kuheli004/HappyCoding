@@ -16,14 +16,97 @@ public class LinkedList {
 		l.push(4);
 		//l.insertAfter(third,five);
 		l.append(6);
+		l.append(7);
 		//l.deleteNode(1);
 		//l.deleteNodePos(1);
 		l.printList();
-		l.lengthLinkList();
+	//	l.lengthLinkList();
 		int len=l.recursiveLength(l.head);
-		System.out.println("len is:::"+len);
+		//l.swapNode(1,3);
+		System.out.println();
+		//l.printNthNode(0);
+		//l.printNthNodeFromBack(5);
+		l.middleElement();
+		/*System.out.println("len is:::"+len);
 		System.out.println(l.Search(0));
-		System.out.println(l.IterativeSearch(l.head,3));
+		System.out.println(l.IterativeSearch(l.head,3));*/
+	}
+
+
+
+private void middleElement() {
+	Node n=head,n1=head;
+	while(n!=null && n.next!=null){
+		n=n.next.next;
+		n1=n1.next;
+	}
+		System.out.println(n1.data);
+	}
+
+
+
+private void printNthNodeFromBack(int pos) {
+	Node n=head,n1=head;
+	int len=0;
+	while(n1!=null){
+		len++;
+		n1=n1.next;
+	}
+	for(int i=0;i<len-pos-1;i++){
+		n=n.next;
+	}
+	System.out.println(n.data);
+	}
+
+
+
+private void printNthNode(int k) {
+
+	Node n=head;
+	for(int i=0;i<k;i++){
+		n=n.next;
+	}
+		System.out.println(n.data);
+	}
+
+
+
+private void swapNode(int x, int y) {
+
+		if(x==y)
+			return;
+		Node currX=head,currY=head;
+			Node prevX=null,prevY=null;
+		while(currX!=null && currY!=null){
+			if(currX.data==x && currY.data==y)
+				return;
+			while(currX.data!=x){
+				prevX=currX;
+				currX=currX.next;
+			}
+			while(currY.data!=y){
+				prevY=currY;
+				currY=currY.next;
+			}
+		
+			if(prevX!=null){
+				prevX.next=currY;
+				
+			}
+			else
+				head=currY;
+			if(prevY!=null){
+				prevY.next=currX;
+				
+			}
+			else
+				head=currX;
+			
+			Node temp=currY.next;
+			currY.next=currX.next;
+			currX.next=temp;
+		}
+
 	}
 
 
