@@ -6,11 +6,16 @@ import java.util.Stack;
 
 public class BinaryTree {
 	Node root;
+	Leaf myLevel=new Leaf();
 	BinaryTree(int key){
 		root=new Node(key);
 	}
 	BinaryTree(){
 		root=null;
+	}
+	class Leaf{
+		int leafLevel=0;
+		
 	}
 	static int min=Integer.MIN_VALUE;
 	public static void main(String[] args) {
@@ -23,7 +28,7 @@ public class BinaryTree {
 		tree.root.left.right=new Node(5);
 		tree.root.right.left=new Node(6);
 		tree.root.right.right=new Node(7);
-		tree.root.left.left.left=new Node(8);
+	//	tree.root.left.left.left=new Node(8);
 		BinaryTree tree2=new BinaryTree(2);
 		tree2.root.left=new Node(4);
 		tree2.root.right=new Node(5);
@@ -56,9 +61,90 @@ public class BinaryTree {
 		//PrintAncestors(tree.root,7);
 		//System.out.println((2*tree2.root.data==SumTree(tree2.root))?"SumTree":"Not Sum Tree");
 		//System.out.println(isSubTree(tree.root,tree2.root));
-			connect(tree.root);
+			//connect(tree.root);
+		/*	if(tree.check(tree.root))
+				System.out.println("Leaves are at same level");
+			else
+				System.out.println("Leaves are not at same level");*/
+		/*tree.toSumTree(tree.root);
+	     System.out.println("\nInorder traversal of binary tree is \n");
+	     printInorder(tree.root);  */
+		printBoundary(tree.root);
+			
 	}
 	
+	private static void printBoundary(Node root) {
+		if(root!=null){
+			printBoundaryLeft(root.left);	
+			PrintLeaves(root.left);
+			PrintLeaves(root.right);
+			printBoundaryRight(root.right);
+		}
+	
+	}
+	private static void PrintLeaves(Node root) {
+	if(root!=null){
+		PrintLeaves(root.left);
+		if(root.left==null && root.right==null)
+			System.out.print(root.data+" ");
+		PrintLeaves(root.right);
+	}
+		
+	}
+	private static void printBoundaryRight(Node root) {
+	if(root!=null){
+			
+			if(root.right!=null)
+			{
+				printBoundaryRight(root.right);
+				System.out.print(root.data+" ");
+			}
+			else if(root.left!=null){
+				printBoundaryRight(root.right);
+				System.out.print(root.data+" ");
+			}
+		}
+		
+	}
+	private static void printBoundaryLeft(Node root) {
+		if(root!=null){
+			
+			if(root.left!=null)
+			{
+				System.out.print(root.data+" ");
+				printBoundaryLeft(root.left);
+			}
+			else if(root.right!=null){
+				System.out.print(root.data+" ");
+				printBoundaryLeft(root.left);
+			}
+		}
+	}
+	private int toSumTree(Node root) {
+		if(root==null)
+			return 0;
+		int old=root.data;
+		root.data=toSumTree(root.left)+toSumTree(root.right);
+		return root.data+old;
+		
+	}
+	private boolean check(Node root) {
+		int level=0;
+	return checkUtil(root,level,myLevel);
+	}
+	private boolean checkUtil(Node root, int level, Leaf leaf) {
+	if(root==null)
+		return true;
+	if(root.left==null && root.right==null){
+		if(leaf.leafLevel==0){
+			leaf.leafLevel=level;
+			return true;
+		}
+		return (level==leaf.leafLevel);
+		
+	}
+		return (checkUtil(root.left ,level+1,leaf) &&checkUtil(root.right,level+1,leaf));
+	}
 	private static void connect(Node root) {
 	root.nextRight=null;
 	connectRecur(root);
