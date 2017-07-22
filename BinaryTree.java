@@ -1,6 +1,8 @@
 package Tree;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -18,6 +20,10 @@ public class BinaryTree {
 		
 	}
 	static int min=Integer.MIN_VALUE;
+	 static  int []in = new int[]{4,2,5,1,3,6};
+	    static int [] pre = new int[]{1,2,4,5,3,6};
+	    static int start=0,end=5,preIndex=0;
+	    static int maxlevel=0;
 	public static void main(String[] args) {
 	
 		BinaryTree tree=new BinaryTree();
@@ -28,11 +34,14 @@ public class BinaryTree {
 		tree.root.left.right=new Node(5);
 		tree.root.right.left=new Node(6);
 		tree.root.right.right=new Node(7);
-	//	tree.root.left.left.left=new Node(8);
-		BinaryTree tree2=new BinaryTree(2);
-		tree2.root.left=new Node(4);
-		tree2.root.right=new Node(5);
-		tree2.root.left.left=new Node(8);
+		tree.root.left.left.left=new Node(8);
+		BinaryTree tree2=new BinaryTree(1);
+		tree2.root.left=new Node(3);
+		tree2.root.right=new Node(2);
+		tree2.root.left.right=new Node(6);
+		tree2.root.left.left=new Node(7);
+		tree2.root.right.right=new Node(4);
+		tree2.root.right.left=new Node(5);
 	/*	tree2.root.left.right=new Node(6);
 		tree2.root.right.right=new Node(3);*/
 	/*	System.out.println("\nPreorder traversal of binary tree is \n");
@@ -69,10 +78,205 @@ public class BinaryTree {
 		/*tree.toSumTree(tree.root);
 	     System.out.println("\nInorder traversal of binary tree is \n");
 	     printInorder(tree.root);  */
-		printBoundary(tree.root);
-			
+	//	printBoundary(tree.root);
+	//	reverseLevelOrder(tree.root);
+	//	reverseLevelOrderUsingStack(tree.root);
+		//getLevelDiff(tree.root);
+		//System.out.println(getLevelDiffRec(tree.root));
+		
+		
+		//print_postorder_from_inorder_preorder(start,end);
+		//System.out.println(isIsomorpic(tree.root,tree2.root));
+		//RightView(tree.root);
+		//PrintSingle(tree.root);
+		//printKDistantfromLeaf(tree.root,1);
+		treePathsSum(tree.root);
 	}
 	
+	
+	
+	
+	private static void treePathsSum(Node root) {
+		System.out.print(treePathsSumUtil(root,0));
+	
+	}
+	private static int treePathsSumUtil(Node root, int val) {
+		if(root==null)
+			return 0;
+		val=val*10+root.data;
+		if(root.left==null && root.right==null)
+			return val;
+		
+		return (treePathsSumUtil(root.left,val)+treePathsSumUtil(root.right,val));
+	}
+	private static void printKDistantfromLeaf(Node root	, int k) {
+	int path[]=new int[1000];
+	boolean visited[]=new boolean[1000];
+	printKDistantfromLeafUtils(root,path,visited,0,k);
+		
+	}
+	private static void printKDistantfromLeafUtils(Node root, int[] path,
+			boolean[] visited, int i, int k) {
+		if(root==null)
+			return;
+		path[i]=root.data;
+		visited[i]=false;
+		i++;
+		
+		if((root.left==null && root.right==null) && (i-k-1>=0) 
+				&& (visited[i-k-1]==false)){
+			System.out.print(path[i-k-1]+" ");
+			visited[i-k-1]=true;
+			return;
+		}
+		printKDistantfromLeafUtils(root.left,path,visited,i,k);
+		printKDistantfromLeafUtils(root.right,path,visited,i,k);
+	}
+	private static void PrintSingle(Node root) {
+			if(root==null)
+				return;
+			if(root.left!=null && root.right==null)
+				System.out.print(root.left.data+" ");
+			else if(root.right!=null && root.left==null)
+				System.out.print(root.right.data+" ");  
+			PrintSingle(root.left);	
+			PrintSingle(root.right);
+		
+		
+	}
+	private static void RightView(Node root) {
+		
+		RightViewUtils(root,1);
+		
+	}
+	private static void RightViewUtils(Node root, int level) {
+		if(root==null)
+			return;
+		if(level>maxlevel){
+		System.out.print(root.data+" ");
+		maxlevel=level;
+		}
+		RightViewUtils(root.right, level+1);
+		RightViewUtils(root.left , level+1);
+
+		
+	}
+	private static boolean isIsomorpic(Node root1, Node root2) {
+	if(root1 ==null && root2==null)
+		return true;
+	if(root1==null || root2==null)
+		return false;
+	if(root1.data !=root2.data)
+		return false;
+	return ((isIsomorpic(root1.left,root2.left)&& isIsomorpic(root1.right,root2.right))
+	||(isIsomorpic(root1.left,root2.right)&& isIsomorpic(root1.right,root2.left)));
+	}
+	static void print_postorder_from_inorder_preorder(int l,int r)
+	{
+	if(l>r)
+	return;
+
+	int temp=pre[preIndex];
+
+	int pos=search(l,r,temp);
+	preIndex++;
+	print_postorder_from_inorder_preorder(l,pos-1);
+	print_postorder_from_inorder_preorder(pos+1,r);
+		System.out.print(temp+" ");
+	}
+	
+	private static int search(int start, int end,int rootValue) {
+	for(int i=start;i<=end;i++){
+		if(in[i]==rootValue)
+			return i;
+	}
+	return -1;
+	}
+	private static int getLevelDiffRec(Node root) {
+	if(root== null)
+			return 0;
+		return (root.data-getLevelDiffRec(root.left)-getLevelDiffRec(root.right));
+		
+	}
+	private static void getLevelDiff(Node root) {
+
+		Queue<Node> q=new LinkedList<Node>();
+		List<Node> li=new ArrayList<Node>();
+		q.add(root);
+		
+		boolean flag=false;
+		int sumOdd=0,sumEven=0;
+			while(!q.isEmpty()){
+			//Node n=q.peek();
+			if(flag){
+				while(!q.isEmpty())
+				{
+					sumOdd+=q.peek().data;
+					li.add(q.poll());
+				}
+			
+			}
+			else
+			{
+				while(!q.isEmpty())
+				{
+					sumEven+=q.peek().data;
+					li.add(q.poll());
+				}
+				
+			}
+			for(Node s:li){
+				if(s.left!=null)
+			q.add(s.left);
+				if(s.right!=null)
+			q.add(s.right);
+			}
+			li.clear();
+			flag=!flag;
+			}
+			System.out.println(sumOdd-sumEven);
+		}
+		
+	
+	private static void reverseLevelOrderUsingStack(Node root) {
+		Stack<Node> S=new Stack<Node>();
+		Queue<Node> Q=new LinkedList<Node>();
+		Q.add(root);
+		while(Q.isEmpty()!=true){
+			Node n=Q.peek();
+			Q.remove();
+			S.push(n);
+			if(n.right!=null)
+				Q.add(n.right);
+		
+			if(n.left!=null)
+				Q.add(n.left);
+		}
+		while(S.isEmpty()!=true){
+			Node n=S.peek();
+			System.out.print(n.data+" ");
+			S.pop();
+		}
+	}
+	
+	private static void reverseLevelOrder(Node root) {
+		int h=height(root);
+		for(int i=h;i>=0;i--){
+			PrintGivenLevelReverse(root,i);
+		}
+		
+	}
+	private static void PrintGivenLevelReverse(Node root, int level) {
+		if(root==null)
+			return;
+		if(level==1)
+			System.out.print(root.data+" ");
+		else if(level >1){
+			PrintGivenLevelReverse(root.left,level-1);
+			PrintGivenLevelReverse(root.right,level-1);
+		}
+		
+	}
 	private static void printBoundary(Node root) {
 		if(root!=null){
 			printBoundaryLeft(root.left);	
